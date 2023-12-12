@@ -1,8 +1,11 @@
 import React from 'react'
+import BlogBox from './components/BlogBox'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <>
+    <BlogBox/>
+    </>
   )
 }
 
