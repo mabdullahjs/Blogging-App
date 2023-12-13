@@ -9,10 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/mongoose": "^5.11.97",
+    "bcrypt": "^5.1.1",
+    "mongoose": "^8.0.3",
     "next": "14.0.3",
-    "next-auth": "^4.24.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

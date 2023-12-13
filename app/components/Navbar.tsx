@@ -30,9 +30,9 @@ const Navbar = () => {
           </div>
         </div>
         <ul role='button' tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-primary rounded-box w-52 ">
-          <li><a ><Link href='/profile'>Profile</Link></a></li>
-          <li><a ><Link href='/dashboard'>Dashboard</Link></a></li>
-          <li><a>Logout</a></li>
+          <Link href='/profile' className=' px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral'>Profile</Link>
+          <Link href='/dashboard' className=' px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral'>Dashboard</Link>
+          <Link href='/' className=' px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral'>Logout</Link>
         </ul>
       </div>}
     </div >
