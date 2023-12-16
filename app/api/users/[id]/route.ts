@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Users from "@/models/user";
 import dbConn from "@/utils/dbConn";
-import mongoose from "mongoose";
 
 interface Props {
     params: { id: number }

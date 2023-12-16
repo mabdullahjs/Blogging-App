@@ -21,7 +21,7 @@ const Navbar = () => {
       </label>
       {false ? <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
-          <li><a>Login</a></li>
+          <Link href='/login' className='font-bold mx-3'>Login</Link>
         </ul>
       </div> : <div className="dropdown dropdown-end">
         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
