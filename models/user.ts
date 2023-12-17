@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
+mongoose.disconnect();
+
 const userSchema = new Schema({
 
     firstname: {
