@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const blogSchema = new mongoose.Schema(
     {
         title: {
@@ -9,6 +8,14 @@ const blogSchema = new mongoose.Schema(
         description: {
             type: String,
             required: true,
+        },
+        profileUrl: {
+            type: String,
+            required: true
+        },
+        uid: {
+            type: String,
+            required: true
         }
     },
     {
@@ -16,6 +23,6 @@ const blogSchema = new mongoose.Schema(
     }
 )
 
-const Blog = mongoose.models.Blog || mongoose.model('Blog', blogSchema)
+const Blog = mongoose.models.Blog || mongoose.model('Blog', blogSchema);
 
 export default Blog;

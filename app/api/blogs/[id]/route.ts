@@ -11,10 +11,10 @@ interface Props {
 // get single user Blogs from DB
 export async function GET(request: NextRequest, { params: { id } }: Props) {
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    const blogs = await Blogs.find({uid:id});
+    if (!blogs) {
         return NextResponse.json({ error: 'No such Blogs' }, { status: 404 });
     }
-    const blogs = await Blogs.findById(id);
     return NextResponse.json(blogs, { status: 200 });
 
 }

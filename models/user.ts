@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-mongoose.disconnect();
-
 const userSchema = new Schema({
 
     firstname: {
@@ -28,5 +26,6 @@ const userSchema = new Schema({
 });
 
 
-const users = mongoose.model("User", userSchema);
+const users = mongoose.models.User || mongoose.model('User', userSchema)
+
 export default users
