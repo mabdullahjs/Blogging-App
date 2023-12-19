@@ -11,7 +11,7 @@ interface Props {
 // get single user Blogs from DB
 export async function GET(request: NextRequest, { params: { id } }: Props) {
 
-    const blogs = await Blogs.find({uid:id});
+    const blogs = await Blogs.find({uid:id}).sort({ createdAt: -1 });
     if (!blogs) {
         return NextResponse.json({ error: 'No such Blogs' }, { status: 404 });
     }

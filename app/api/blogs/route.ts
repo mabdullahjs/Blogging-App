@@ -18,9 +18,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(validation.error.errors, { status: 401 });
     } else {
         await dbConn();
-        await Blogs.create(body);
+        let createdblog = await Blogs.create(body);
         return NextResponse.json({
-            message: 'blog added succesfully'
+            message: 'blog added succesfully',
+            blog: createdblog
         }, { status: 201 });
     }
 }

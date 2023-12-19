@@ -2,21 +2,10 @@
 
 import React, { FormEvent, use, useEffect, useState } from 'react'
 import BlogBox from '../components/BlogBox'
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+
 
 const Dashboard = () => {
-
-    const uid = localStorage.getItem('uid')
-    useEffect(()=>{
-        axios.get(`/api/blogs/${uid}`)
-        .then((res)=>{
-            console.log(res.data);
-        }).catch((err)=>{
-            console.log(err);
-            
-        })
-    } , [])
-
 
     //states
     const [title, setTitle] = useState('');
@@ -24,9 +13,24 @@ const Dashboard = () => {
     const [loading, setloading] = useState<boolean>(false);
     const [alert, setalert] = useState<boolean>(false);
     const [alertext, setalertext] = useState<string>('');
-    const [data , setData] = useState([])
+    const [data, setData] = useState([])
     const profileUrl = localStorage.getItem('profileUrl');
-    
+
+
+    const uid = localStorage.getItem('uid');
+    useEffect(() => {
+        axios.get(`/api/blogs/${uid}`)
+            .then((res) => {
+                console.log(res.data);
+                setData(res.data);
+            }).catch((err) => {
+                console.log(err);
+
+            })
+    }, [])
+
+
+
 
 
     // create blog
@@ -40,6 +44,7 @@ const Dashboard = () => {
         }).then((res) => {
             console.log(res.data);
             setalertext('Blog Published Succesfully');
+            setData([res.data.blog, ...data]);
             setalert(true);
             setTimeout(() => {
                 setalert(false)
@@ -72,10 +77,9 @@ const Dashboard = () => {
                 <h1 className='text-2xl font-bold pl-8'>My Blog</h1>
             </div>
             <div>
-                {/* <BlogBox date='Elon Musk - August 17th, 2023' title='Introducing Whisper' descriptipn='lorem ipsum 123' src='https://hips.hearstapps.com/hmg-prod/images/gettyimages-1229892983-square.jpg' seeHidden={true} deleteHidden={false} /> */}
-                {data ? data.map((item:{title:string; description:string; profileUrl:string})=>{
-                    return <BlogBox date='Elon Musk - August 17th, 2023' title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} />
-                }): <div>Loading...</div>}
+                {data ? data.map((item: { title: string; description: string; profileUrl: string, _id: string }) => {
+                    return <BlogBox key={item._id} date='Elon Musk - August 17th, 2023' title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} />
+                }) : <div>Loading...</div>}
             </div>
         </>
     )
