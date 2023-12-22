@@ -7,7 +7,7 @@ import Blogs from "@/models/blog";
 
 export async function GET(request: NextRequest) {
     await dbConn();
-    const blogs = await Blogs.find({});
+    const blogs = await Blogs.find({}).sort({ createdAt: -1 });
     return NextResponse.json(blogs)
 }
 

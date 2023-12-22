@@ -1,7 +1,7 @@
 'use client'
 
-import React, { FormEvent, use, useEffect, useState } from 'react'
-import BlogBox from '../components/BlogBox'
+import React, { FormEvent, use, useEffect, useState } from 'react';
+import BlogBox from '../components/BlogBox';
 import axios, { AxiosResponse } from 'axios';
 
 

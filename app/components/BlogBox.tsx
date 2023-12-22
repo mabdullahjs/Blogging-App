@@ -7,14 +7,15 @@ interface Props {
   descriptipn: string;
   date: string;
   deleteHidden: boolean;
-  seeHidden: boolean
+  seeHidden: boolean;
+  uid?:string
 }
-const BlogBox = ({ date, descriptipn, title, src, deleteHidden, seeHidden }: Props) => {
+const BlogBox = ({ date, descriptipn, title, src, deleteHidden, seeHidden, uid }: Props) => {
   return (
     <div className='container mx-auto mt-5 mb-5 w-[90%] p-10 rounded-lg bg-base-200'>
-      <div className="top-container flex gap-5 flex-wrap items-center">
+      <div className="top-container flex gap-2 flex-wrap items-center">
         <div>
-          <img className='w-[80px] h-[80px] rounded-xl' src={src} alt="profile-pic" />
+          <img className='w-[80px] rounded-xl' src={src} alt="profile-pic" />
         </div>
         <div className="title">
           <h1 className='text-xl'>{title}</h1>
@@ -25,7 +26,7 @@ const BlogBox = ({ date, descriptipn, title, src, deleteHidden, seeHidden }: Pro
         {descriptipn}
       </div>
       <div className={seeHidden ? 'hidden' : 'mt-5'}>
-        <Link  className='mt-5 text-[#7749F8]' href="/user/459634756347895687">see all from this user</Link>
+        <Link className='mt-5 text-[#7749F8]' href={`/user/${uid}`}>see all from this user</Link>
       </div>
       <div className={deleteHidden ? 'hidden' : 'flex gap-5'}>
         <a className='mt-5 text-[#7749F8]' href="">Delete</a>

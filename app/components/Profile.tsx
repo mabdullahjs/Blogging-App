@@ -7,16 +7,16 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 
 const Profile = () => {
-    let [img , setImg] = useState('');
-    let [isuser , setisuser] = useState(true);
+    let [img, setImg] = useState('');
+    let [isuser, setisuser] = useState(true);
     onAuthStateChanged(auth, (user) => {
         if (user) {
             const uid = user.uid;
             axios.get(`/api/users/${uid}`)
                 .then((res) => {
                     setImg(res.data[0].profileUrl);
-                    localStorage.setItem('profileUrl' , res.data[0].profileUrl)
-                    localStorage.setItem('uid' , uid)
+                    localStorage.setItem('profileUrl', res.data[0].profileUrl)
+                    localStorage.setItem('uid', uid)
                     setisuser(false)
                 }).catch((err) => {
                     console.log(err);
@@ -27,6 +27,7 @@ const Profile = () => {
         }
 
     });
+
     return (
         <>
             {isuser ? (
@@ -45,13 +46,13 @@ const Profile = () => {
                         </div>
                     </div>
                     <ul role="button" tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-primary rounded-box w-52">
-                        <Link className="px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral" href="/profile">
+                        <Link className="px-2 py-1 rounded-xl" href="/profile">
                             Profile
                         </Link>
-                        <Link className="px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral" href="/dashboard">
+                        <Link className="px-2 py-1 rounded-xl" href="/dashboard">
                             Dashboard
                         </Link>
-                        <Link className="px-2 py-1 rounded-xl hover:bg-primary-content hover:text-neutral" href="/">
+                        <Link className="px-2 py-1 rounded-xl" href="/">
                             Logout
                         </Link>
                     </ul>
