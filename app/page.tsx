@@ -29,8 +29,8 @@ const Home = async () => {
               : 'Good Night'} Readers!</h1>
       </div>
       <div className='mt-[4rem]'>
-        {data.map((item:{createdAt:string , id:string , title:string, description:string , profileUrl:string , _id:string, uid:string})=>{
-          return <BlogBox key={item._id} date={`Elon Musk - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={false} deleteHidden={true} uid={item.uid} />
+        {data.map((item:{createdAt:string , id:string , title:string, description:string , profileUrl:string , _id:string, uid:string, username:string})=>{
+          return <BlogBox key={item._id} date={`${item.username} - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={false} deleteHidden={true} uid={item.uid} />
         })}
       </div>
     </>

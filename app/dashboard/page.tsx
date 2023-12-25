@@ -4,6 +4,14 @@ import React, { FormEvent, use, useEffect, useState } from 'react';
 import BlogBox from '../components/BlogBox';
 import axios, { AxiosResponse } from 'axios';
 
+interface User {
+    _id: string;
+    firstname: string;
+    lastname: string;
+    profileUrl: string;
+    title: string;
+    description: string
+}
 
 const Dashboard = () => {
 
@@ -13,36 +21,47 @@ const Dashboard = () => {
     const [loading, setloading] = useState<boolean>(false);
     const [alert, setalert] = useState<boolean>(false);
     const [alertext, setalertext] = useState<string>('');
-    const [data, setData] = useState([])
-    const profileUrl = localStorage.getItem('profileUrl');
+    const [data, setData] = useState([]);
+    const [handleData, sethandleData] = useState(true);
+    const [uid, setUid] = useState<string | null>(localStorage.getItem('uid'));
+    const [user, setUser] = useState<User>({ _id: '', firstname: '', lastname: '', profileUrl: '', title: '', description: '' });
+    const profileUrl = user.profileUrl;
 
 
-    const uid = localStorage.getItem('uid');
     useEffect(() => {
-        axios.get(`/api/blogs/${uid}`)
-            .then((res) => {
-                console.log(res.data);
-                setData(res.data);
-            }).catch((err) => {
-                console.log(err);
+        const fetchData = async () => {
+            try {
+                const blogsResponse = await axios.get(`/api/blogs/${uid}`);
+                console.log(blogsResponse.data);
+                setData(blogsResponse.data);
 
-            })
-    }, [])
+                const usersResponse = await axios.get(`http://localhost:3000/api/users/${uid}`);
+                setUser(usersResponse.data[0]);
+                console.log(usersResponse.data[0]);
 
-
-
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        if(handleData){
+            fetchData();
+            sethandleData(false);
+        }
+    }, [handleData]);
 
 
     // create blog
     const createBlog = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        console.log(user.firstname);
+
         setloading(true)
         axios.post('/api/blogs', {
             title, description,
             profileUrl: profileUrl,
-            uid
+            uid,
+            username: `${user.firstname} ${user.lastname}`
         }).then((res) => {
-            console.log(res.data);
             setalertext('Blog Published Succesfully');
             setData([res.data.blog, ...data]);
             setalert(true);
@@ -56,6 +75,30 @@ const Dashboard = () => {
             setloading(false)
         })
     }
+
+    //change date format 
+    function formatMongoDBTimestamp(mongoTimestamp: string): string {
+        const date = new Date(mongoTimestamp);
+
+        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate: string = date.toLocaleDateString('en-US', options);
+
+        return formattedDate;
+    }
+
+    //delete blog function
+    function deleteBlog(index:number){
+        console.log('blog deleted');
+        console.log(data[index]);
+        
+        axios.delete(`/api/blogs/${data[index]._id}`);
+        data.splice(index , 1);
+        sethandleData(true);
+    }
+    //update blog function
+    function updateBlog(index:number){
+        console.log('blog updated');
+    }
     return (
         <>
             {alert ? <div role="alert" className="alert alert-success absolute">
@@ -67,7 +110,7 @@ const Dashboard = () => {
             </div>
             <form onSubmit={createBlog} className='container mx-auto mt-5 mb-5 w-[90%] p-10 rounded-lg bg-base-200 flex flex-col gap-5 items-center'>
                 <input type="text" placeholder="Title" className="input input-bordered w-full max-w-xs" onChange={(e) => setTitle(e.target.value)} min={3} max={20} />
-                <textarea placeholder="What is in your mind" className="textarea textarea-bordered textarea-lg w-full max-w-xs" onChange={(e) => setDescription(e.target.value)} minLength={5} maxLength={30}></textarea>
+                <textarea placeholder="What is in your mind" className="textarea textarea-bordered textarea-lg w-full max-w-xs" onChange={(e) => setDescription(e.target.value)} minLength={5} maxLength={300}></textarea>
                 {/* <button type='submit' className="btn btn-primary" >Publish Blog</button> */}
                 {loading ? <button className="btn btn-primary">
                     <span className="loading loading-sm loading-spinner"></span>
@@ -77,9 +120,9 @@ const Dashboard = () => {
                 <h1 className='text-2xl font-bold pl-8'>My Blog</h1>
             </div>
             <div>
-                {data ? data.map((item: { title: string; description: string; profileUrl: string, _id: string }) => {
-                    return <BlogBox key={item._id} date='Elon Musk - August 17th, 2023' title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} />
-                }) : <div>Loading...</div>}
+                {data && data.length > 0 ? data.map((item: { title: string; description: string; profileUrl: string, _id: string, createdAt: string, username: string } , index:number) => {
+                    return <BlogBox key={item._id} date={`${item.username} - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} deleteBlog={()=>deleteBlog(index)} updateBlog={()=>updateBlog(index)} />
+                }) : <div className='text-center text-xl '>No Blogs found...</div>}
             </div>
         </>
     )

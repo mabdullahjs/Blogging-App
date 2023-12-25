@@ -2,8 +2,9 @@
 
 import { auth } from '@/utils/firebaseconfig';
 import axios from 'axios';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react';
 
 const Profile = () => {
@@ -22,11 +23,21 @@ const Profile = () => {
                     console.log(err);
                 })
 
-        } else {
-            console.log('no user');
+                return
         }
 
     });
+
+    const router = useRouter();
+    //logout user
+    function logoutUser() {
+        signOut(auth).then(() => {
+            router.push('/login');
+            localStorage.removeItem('uid')
+        }).catch((error) => {
+           console.log(error);
+        });
+    }
 
     return (
         <>
@@ -52,9 +63,9 @@ const Profile = () => {
                         <Link className="px-2 py-1 rounded-xl" href="/dashboard">
                             Dashboard
                         </Link>
-                        <Link className="px-2 py-1 rounded-xl" href="/">
+                        <div onClick={logoutUser} className="px-2 py-1 rounded-xl">
                             Logout
-                        </Link>
+                        </div>
                     </ul>
                 </div>
             )}
