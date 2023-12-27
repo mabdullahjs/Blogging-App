@@ -29,10 +29,10 @@ const Login = () => {
     event.preventDefault();
     setloading(true);
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);        
-        router.push('/');
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);        
+      router.push('/');
       })
       .catch((error) => {
         console.log(error.message);
@@ -40,7 +40,8 @@ const Login = () => {
         setalert(true);
         setTimeout(() => {
           setalert(false)
-        }, 2000);
+        }, 2000)
+        setloading(false);
       });
   }
   return (

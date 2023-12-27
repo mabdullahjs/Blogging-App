@@ -5,37 +5,39 @@ import axios from 'axios';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Profile = () => {
     let [img, setImg] = useState('');
     let [isuser, setisuser] = useState(true);
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const uid = user.uid;
-            axios.get(`/api/users/${uid}`)
-                .then((res) => {
-                    setImg(res.data[0].profileUrl);
-                    localStorage.setItem('profileUrl', res.data[0].profileUrl)
-                    localStorage.setItem('uid', uid)
-                    setisuser(false)
-                }).catch((err) => {
-                    console.log(err);
-                })
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const uid = user.uid;
+                axios.get(`/api/users/${uid}`)
+                    .then((res) => {
+                        setImg(res.data[0].profileUrl);
+                        localStorage.setItem('profileUrl', res.data[0].profileUrl)
+                        localStorage.setItem('uid', uid)
+                        setisuser(false)
+                    }).catch((err) => {
+                        console.log(err);
+                    })
 
                 return
-        }
+            }
 
-    });
-
+        });
+    }, [isuser])
     const router = useRouter();
     //logout user
     function logoutUser() {
         signOut(auth).then(() => {
             router.push('/login');
             localStorage.removeItem('uid')
+            setisuser(true);
         }).catch((error) => {
-           console.log(error);
+            console.log(error);
         });
     }
 
