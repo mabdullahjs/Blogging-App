@@ -7,13 +7,13 @@ const Home = async () => {
   const data = res.data
 
   const currentHour = new Date().getHours();
-   // change data format function
-   function formatMongoDBTimestamp(mongoTimestamp: string): string {
+  // change data format function
+  function formatMongoDBTimestamp(mongoTimestamp: string): string {
     const date = new Date(mongoTimestamp);
-  
+
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate: string = date.toLocaleDateString('en-US', options);
-  
+
     return formattedDate;
   }
 
@@ -29,7 +29,7 @@ const Home = async () => {
               : 'Good Night'} Readers!</h1>
       </div>
       <div className='mt-[4rem]'>
-        {data.map((item:{createdAt:string , id:string , title:string, description:string , profileUrl:string , _id:string, uid:string, username:string})=>{
+        {data.map((item: { createdAt: string, id: string, title: string, description: string, profileUrl: string, _id: string, uid: string, username: string }) => {
           return <BlogBox key={item._id} date={`${item.username} - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={false} deleteHidden={true} uid={item.uid} />
         })}
       </div>

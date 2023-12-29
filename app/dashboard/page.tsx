@@ -18,11 +18,13 @@ const Dashboard = () => {
     //states
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [updateFrom, setUpdateForm] = useState('');
     const [loading, setloading] = useState<boolean>(false);
     const [alert, setalert] = useState<boolean>(false);
     const [alertext, setalertext] = useState<string>('');
     const [data, setData] = useState([]);
     const [handleData, sethandleData] = useState(true);
+    const [index, setIndex] = useState(0);
     const [uid, setUid] = useState<string | null>(localStorage.getItem('uid'));
     const [user, setUser] = useState<User>({ _id: '', firstname: '', lastname: '', profileUrl: '', title: '', description: '' });
     const profileUrl = user.profileUrl;
@@ -43,7 +45,7 @@ const Dashboard = () => {
                 console.error('Error fetching data:', error);
             }
         };
-        if(handleData){
+        if (handleData) {
             fetchData();
             sethandleData(false);
         }
@@ -87,18 +89,32 @@ const Dashboard = () => {
     }
 
     //delete blog function
-    function deleteBlog(index:number){
-        console.log('blog deleted');
-        console.log(data[index]);
-        
+    function deleteBlog(index: number) {
+
         axios.delete(`/api/blogs/${data[index]._id}`);
-        data.splice(index , 1);
+        data.splice(index, 1);
         sethandleData(true);
     }
     //update blog function
-    function updateBlog(index:number){
-        console.log('blog updated');
+    function updateBlog(index: number) {
+        console.log('blog updated', index);
     }
+
+    //open delete modal
+    const openModal = (index: number) => {
+        setIndex(index);
+        const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
+        if (modal) {
+            modal.showModal();
+        }
+    };
+    const openUpdateModal = (index: number) => {
+        setIndex(index);
+        const modal = document.getElementById('my_modal_4') as HTMLDialogElement | null;
+        if (modal) {
+            modal.showModal();
+        }
+    };
     return (
         <>
             {alert ? <div role="alert" className="alert alert-success absolute">
@@ -120,10 +136,35 @@ const Dashboard = () => {
                 <h1 className='text-2xl font-bold pl-8'>My Blog</h1>
             </div>
             <div>
-                {data && data.length > 0 ? data.map((item: { title: string; description: string; profileUrl: string, _id: string, createdAt: string, username: string } , index:number) => {
-                    return <BlogBox key={item._id} date={`${item.username} - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} deleteBlog={()=>deleteBlog(index)} updateBlog={()=>updateBlog(index)} />
+                {data && data.length > 0 ? data.map((item: { title: string; description: string; profileUrl: string, _id: string, createdAt: string, username: string }, index: number) => {
+                    return <BlogBox key={item._id} date={`${item.username} - ${formatMongoDBTimestamp(item.createdAt)}`} title={item.title} descriptipn={item.description} src={item.profileUrl} seeHidden={true} deleteHidden={false} deleteBlog={() => openModal(index)} updateBlog={() => openUpdateModal(index)} />
                 }) : <div className='text-center text-xl '>No Blogs found...</div>}
             </div>
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Warning!</h3>
+                    <p className="py-4">Are you sure to delete this blog?</p>
+                    <div className="modal-action">
+                        <form method="dialog">
+                            <button className="btn">Close</button>
+                            <button className="btn btn-error" onClick={() => deleteBlog(index)}>delete</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+            <dialog id="my_modal_4" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Update!</h3>
+                    {/* <p className="py-4">Are you sure to delete this blog?</p> */}
+                    <input type="text" placeholder="Add updated title here" onChange={(e) => setUpdateForm(e.target.value)} className="input input-bordered input-success w-full max-w-xs mt-5" />
+                    <div className="modal-action">
+                        <form method="dialog">
+                            <button className="btn">Close</button>
+                        </form>
+                        <button className="btn btn-success" onClick={() => updateBlog(index)}>update</button>
+                    </div>
+                </div>
+            </dialog>
         </>
     )
 }
