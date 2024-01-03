@@ -26,10 +26,7 @@ export async function PUT(request: NextRequest, { params: { id } }: Props) {
         return NextResponse.json({ error: 'No such Blogs' }, { status: 404 });
     }
     const body = await request.json();
-    const validation = schema.safeParse(body);
-    if (!validation.success) {
-        return NextResponse.json(validation.error.errors, { status: 401 });
-    }
+
     await dbConn();
     const blogs = await Blogs.findOneAndUpdate(
         { _id: id },

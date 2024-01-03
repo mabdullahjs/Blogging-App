@@ -1,8 +1,8 @@
 'use client'
 
-import React, { FormEvent, use, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import BlogBox from '../components/BlogBox';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 interface User {
     _id: string;
@@ -90,13 +90,18 @@ const Dashboard = () => {
 
     //delete blog function
     function deleteBlog(index: number) {
-
         axios.delete(`/api/blogs/${data[index]._id}`);
         data.splice(index, 1);
+        setData([...data]);
         sethandleData(true);
     }
     //update blog function
     function updateBlog(index: number) {
+        axios.put(`/api/blogs/${data[index]._id}`, {
+            title: updateFrom
+        })
+        data[index].title = updateFrom
+        setData([...data])
         console.log('blog updated', index);
     }
 
@@ -147,7 +152,7 @@ const Dashboard = () => {
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Close</button>
-                            <button className="btn btn-error" onClick={() => deleteBlog(index)}>delete</button>
+                            <button className="btn btn-error ml-4" onClick={() => deleteBlog(index)}>delete</button>
                         </form>
                     </div>
                 </div>
@@ -160,13 +165,11 @@ const Dashboard = () => {
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Close</button>
+                            <button className="btn btn-success ml-4" onClick={() => updateBlog(index)}>update</button>
                         </form>
-                        <button className="btn btn-success" onClick={() => updateBlog(index)}>update</button>
                     </div>
                 </div>
             </dialog>
         </>
     )
 }
-
-export default Dashboard
