@@ -1,15 +1,20 @@
 'use client'
 
+import { addUser, removeUser } from '@/lib/reducers/userSlice';
 import { auth } from '@/utils/firebaseconfig';
 import axios from 'axios';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const Profile = () => {
     let [img, setImg] = useState('');
     let [isuser, setisuser] = useState(true);
+
+    //use dispatch
+    const dispatch = useDispatch();
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -17,8 +22,12 @@ const Profile = () => {
                 axios.get(`/api/users/${uid}`)
                     .then((res) => {
                         setImg(res.data[0].profileUrl);
-                        localStorage.setItem('profileUrl', res.data[0].profileUrl)
-                        localStorage.setItem('uid', uid)
+                        dispatch(addUser({
+                            uid: uid,
+                            profileUrl: res.data[0].profileUrl
+                        }))
+                        // localStorage.setItem('profileUrl', res.data[0].profileUrl)
+                        // localStorage.setItem('uid', uid)
                         setisuser(false)
                     }).catch((err) => {
                         console.log(err);
@@ -34,7 +43,8 @@ const Profile = () => {
     function logoutUser() {
         signOut(auth).then(() => {
             router.push('/login');
-            localStorage.removeItem('uid')
+            dispatch(removeUser());
+            // localStorage.removeItem('uid')
             setisuser(true);
         }).catch((error) => {
             console.log(error);

@@ -6,10 +6,13 @@ import axios from 'axios'
 import { updatePassword } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 const Profile = () => {
+
+    const selector = useSelector((state:{user:{uid:string , profileUrl:string}}) => state.user);
     useEffect(() => {
-        axios.get(`/api/users/${localStorage.getItem('uid')}`)
+        axios.get(`/api/users/${selector.uid}`)
             .then((res) => {
                 console.log(typeof res.data[0].profileUrl);
 

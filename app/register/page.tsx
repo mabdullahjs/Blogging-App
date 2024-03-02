@@ -7,16 +7,20 @@ import { getDownloadURL, ref, uploadBytes, StorageReference } from "firebase/sto
 import { auth, storage } from '@/utils/firebaseconfig';
 import axios from "axios";
 import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux';
 
 
 
 const Register = () => {
-     //check user
-  onAuthStateChanged(auth , (user)=>{
-    if(user){
-      router.push('/')
-    }
-  })
+    //check user
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            router.push('/')
+        }
+    })
+
+    //dispatch
+    const dispatch = useDispatch()
     const [firstname, setfirstname] = useState<string>("");
     const [lastname, setlastname] = useState<string>("");
     const [email, setemail] = useState<string>("");
@@ -42,24 +46,24 @@ const Register = () => {
             if (profileUrl) {
                 await uploadBytes(storageRef, profileUrl);
                 const url: string = await getDownloadURL(storageRef);
-                console.log(url);
 
-                axios.post('/api/users', {
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: email,
-                    uid: user.uid,
-                    profileUrl: url
-                }).then((res) => {
-                    console.log(res.data);
-                    router.push('/')
-                }).catch((err) => {
+                try {
+                    const res = await axios.post('/api/users', {
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        uid: user.uid,
+                        profileUrl: url
+                    });
+                    console.log('jo chahya wohi===>',res.data);
+                    router.push('/');
+                } catch (err) {
                     console.log(err);
-                }).finally(() => {
-                    setloading(false)
-                })
+                } finally {
+                    setloading(false);
+                }
             }
-        } catch (error:any) {
+        } catch (error: any) {
             console.error(error);
             setalertext(error.message);
             setalert(true);

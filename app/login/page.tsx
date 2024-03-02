@@ -29,9 +29,7 @@ const Login = () => {
     event.preventDefault();
     setloading(true);
     signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(user);        
+    .then(() => {   
       router.push('/');
       })
       .catch((error) => {

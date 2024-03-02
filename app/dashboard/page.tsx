@@ -1,8 +1,9 @@
 'use client'
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, use, useEffect, useState } from 'react';
 import BlogBox from '../components/BlogBox';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { useSelector } from 'react-redux';
 
 interface User {
     _id: string;
@@ -15,6 +16,9 @@ interface User {
 
 const Dashboard = () => {
 
+    //use selector 
+    const selector = useSelector((state:{user:{uid:string , profileUrl:string}}) => state.user);
+
     //states
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -25,7 +29,7 @@ const Dashboard = () => {
     const [data, setData] = useState([]);
     const [handleData, sethandleData] = useState(true);
     const [index, setIndex] = useState(0);
-    const [uid, setUid] = useState<string | null>(localStorage.getItem('uid'));
+    const [uid, setUid] = useState<string | null>(selector.uid);
     const [user, setUser] = useState<User>({ _id: '', firstname: '', lastname: '', profileUrl: '', title: '', description: '' });
     const profileUrl = user.profileUrl;
 
@@ -93,7 +97,6 @@ const Dashboard = () => {
         axios.delete(`/api/blogs/${data[index]._id}`);
         data.splice(index, 1);
         setData([...data]);
-        sethandleData(true);
     }
     //update blog function
     function updateBlog(index: number) {
@@ -152,7 +155,9 @@ const Dashboard = () => {
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Close</button>
-                            <button className="btn btn-error ml-4" onClick={() => deleteBlog(index)}>delete</button>
+                        </form>
+                        <form method="dialog">
+                            <button className="btn btn-error text-white" onClick={() => deleteBlog(index)}>delete</button>
                         </form>
                     </div>
                 </div>
@@ -165,7 +170,9 @@ const Dashboard = () => {
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Close</button>
-                            <button className="btn btn-success ml-4" onClick={() => updateBlog(index)}>update</button>
+                        </form>
+                        <form method="dialog">
+                            <button className="btn btn-success text-white" onClick={() => updateBlog(index)}>update</button>
                         </form>
                     </div>
                 </div>
@@ -173,3 +180,5 @@ const Dashboard = () => {
         </>
     )
 }
+
+export default Dashboard
