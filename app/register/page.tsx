@@ -1,26 +1,22 @@
 'use client'
 
 import Link from 'next/link';
-import { ChangeEvent, FormEvent, useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, UserCredential } from "firebase/auth";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytes, StorageReference } from "firebase/storage";
 import { auth, storage } from '@/utils/firebaseconfig';
 import axios from "axios";
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux';
+import { addUser } from '@/lib/reducers/userSlice';
 
 
 
 const Register = () => {
-    //check user
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            router.push('/')
-        }
-    })
+
 
     //dispatch
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [firstname, setfirstname] = useState<string>("");
     const [lastname, setlastname] = useState<string>("");
     const [email, setemail] = useState<string>("");
@@ -30,8 +26,10 @@ const Register = () => {
     const [alert, setalert] = useState<boolean>(false);
     const [alertext, setalertext] = useState<string>('');
 
-    //use router config
+
+    //router
     const router = useRouter()
+
     // register user function
     const registerUser = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -55,7 +53,11 @@ const Register = () => {
                         uid: user.uid,
                         profileUrl: url
                     });
-                    console.log('jo chahya wohi===>',res.data);
+                    console.log('jo chahya wohi===>', res.data);
+                    dispatch(addUser({
+                        uid: user.uid,
+                        profileUrl: url
+                    }))
                     router.push('/');
                 } catch (err) {
                     console.log(err);
