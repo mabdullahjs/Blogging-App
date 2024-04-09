@@ -5,12 +5,24 @@ import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/utils/firebaseconfig'
+import { useDispatch } from 'react-redux'
+import { addUser } from '@/lib/reducers/userSlice'
+import axios from 'axios'
 
 const Login = () => {
   //check user
-  onAuthStateChanged(auth , (user)=>{
-    if(user){
-      router.push('/')
+  onAuthStateChanged(auth, (user) => {
+    if (user) { 
+      axios.get(`/api/users/${user.uid}`)
+        .then((res) => {
+          dispatch(addUser({
+            uid: user.uid,
+            profileUrl: res.data[0].profileUrl
+          }))
+          router.push('/')
+        }).catch((err) => {
+          console.log('yahi check krna ha.',err);
+        })
     }
   })
   //states
@@ -21,6 +33,9 @@ const Login = () => {
   const [loading, setloading] = useState<boolean>(false);
 
 
+  //useDispatch
+  const dispatch = useDispatch()
+
   //router
   const router = useRouter();
 
@@ -29,8 +44,8 @@ const Login = () => {
     event.preventDefault();
     setloading(true);
     signInWithEmailAndPassword(auth, email, password)
-    .then(() => {   
-      router.push('/');
+      .then(() => {
+
       })
       .catch((error) => {
         console.log(error.message);
@@ -53,8 +68,8 @@ const Login = () => {
           <input onChange={(e) => setemail(e.target.value)} type="email" placeholder="email" className="input input-bordered w-full max-w-xs" />
           <input onChange={(e) => setpassword(e.target.value)} type="password" placeholder="Password" className="input input-bordered w-full max-w-xs" />
           {loading ? <button className="btn btn-primary">
-                    <span className="loading loading-sm loading-spinner"></span>
-                </button> : <button type='submit' className="btn btn-primary">Login</button>}
+            <span className="loading loading-sm loading-spinner"></span>
+          </button> : <button type='submit' className="btn btn-primary">Login</button>}
           <Link href='/register' className='text-primary'>Not a user? Please register first!</Link>
         </form>
       </div>
