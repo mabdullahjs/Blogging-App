@@ -26,7 +26,7 @@ const Dashboard = () => {
     const [loading, setloading] = useState<boolean>(false);
     const [alert, setalert] = useState<boolean>(false);
     const [alertext, setalertext] = useState<string>('');
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<any>([]);
     const [handleData, sethandleData] = useState(true);
     const [index, setIndex] = useState(0);
     const [uid, setUid] = useState<string | null>(selector.uid);
