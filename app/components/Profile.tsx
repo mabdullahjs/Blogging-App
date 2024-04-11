@@ -1,6 +1,7 @@
 'use client'
 
 import { addUser, removeUser } from '@/lib/reducers/userSlice';
+import { store } from '@/lib/store';
 import { auth } from '@/utils/firebaseconfig';
 import axios from 'axios';
 import { signOut } from 'firebase/auth';
@@ -12,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const Profile = () => {
     let [img, setImg] = useState('');
     let [isuser, setisuser] = useState(true);
+
 
     //get data from selector
     const selector = useSelector((state: { user: { uid: string, profileUrl: string } }) => state.user);
@@ -30,8 +32,8 @@ const Profile = () => {
     //logout user
     function logoutUser() {
         signOut(auth).then(() => {
-            router.push('/login');
             dispatch(removeUser());
+            router.push('/login');
             // localStorage.removeItem('uid')
             setisuser(true);
         }).catch((error) => {

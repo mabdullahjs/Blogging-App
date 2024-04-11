@@ -1,9 +1,12 @@
 import React from 'react'
 import BlogBox from './components/BlogBox'
-import axios from 'axios';
+import instance from '@/utils/apihandeling';
 
 const Home = async () => {
-  const res = await axios.get('http://localhost:3000/api/blogs');
+
+  const res = await instance.get(`/api/blogs`);
+
+  
   const data = res.data
 
   const currentHour = new Date().getHours();

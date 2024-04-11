@@ -1,19 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/utils/firebaseconfig'
 import { useDispatch } from 'react-redux'
 import { addUser } from '@/lib/reducers/userSlice'
-import axios from 'axios'
+import instance from '@/utils/apihandeling'
 
 const Login = () => {
   //check user
+ useEffect(()=>{
   onAuthStateChanged(auth, (user) => {
     if (user) { 
-      axios.get(`/api/users/${user.uid}`)
+      instance.get(`/api/users/${user.uid}`)
         .then((res) => {
           dispatch(addUser({
             uid: user.uid,
@@ -25,6 +26,7 @@ const Login = () => {
         })
     }
   })
+ } , [])
   //states
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");

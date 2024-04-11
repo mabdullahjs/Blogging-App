@@ -5,10 +5,10 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytes, StorageReference } from "firebase/storage";
 import { auth, storage } from '@/utils/firebaseconfig';
-import axios from "axios";
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux';
 import { addUser } from '@/lib/reducers/userSlice';
+import instance from '@/utils/apihandeling';
 
 
 
@@ -46,7 +46,7 @@ const Register = () => {
                 const url: string = await getDownloadURL(storageRef);
 
                 try {
-                    const res = await axios.post('/api/users', {
+                    const res = await instance.post('/api/users', {
                         firstname: firstname,
                         lastname: lastname,
                         email: email,

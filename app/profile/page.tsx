@@ -1,8 +1,8 @@
 'use client'
 
 
+import instance from '@/utils/apihandeling'
 import { auth } from '@/utils/firebaseconfig'
-import axios from 'axios'
 import { updatePassword } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -10,9 +10,9 @@ import { useSelector } from 'react-redux'
 
 const Profile = () => {
 
-    const selector = useSelector((state:{user:{uid:string , profileUrl:string}}) => state.user);
+    const selector = useSelector((state: { user: { uid: string, profileUrl: string } }) => state.user);
     useEffect(() => {
-        axios.get(`/api/users/${selector.uid}`)
+        instance.get(`/api/users/${selector.uid}`)
             .then((res) => {
                 console.log(typeof res.data[0].profileUrl);
 
@@ -24,6 +24,8 @@ const Profile = () => {
     const [username, setUsername] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [repeatPassword, setRepeatPassword] = useState<string>('');
+    const [alert, setalert] = useState<boolean>(false);
+    const [alertext, setalertext] = useState<string>('');
 
     const router = useRouter();
 
@@ -35,6 +37,11 @@ const Profile = () => {
 
         }).catch((error) => {
             console.log(error);
+            setalertext(error.message);
+            setalert(true);
+            setTimeout(() => {
+              setalert(false)
+            }, 2000)
 
         });
     }
@@ -43,6 +50,10 @@ const Profile = () => {
 
     return (
         <>
+            {alert ? <div role="alert" className="alert alert-error absolute">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{alertext}</span>
+            </div> : null}
             <div className='p-5 bg-base-200'>
                 <h1 className='text-3xl font-bold pl-5'>Profile</h1>
             </div>
@@ -52,9 +63,9 @@ const Profile = () => {
                     <h1 className='text-2xl font-semibold'>{username}</h1>
 
                 </div>
-                    <input onChange={(e) => setNewPassword(e.target.value)} type="text" placeholder="new password" className="input input-bordered w-full max-w-xs" />
-                    <input onChange={(e) => setRepeatPassword(e.target.value)} type="text" placeholder="repeat password" className="input input-bordered w-full max-w-xs" />
-                    <button className="btn btn-primary" onClick={updateUserPassword}>Update Password</button>
+                <input onChange={(e) => setNewPassword(e.target.value)} type="text" placeholder="new password" className="input input-bordered w-full max-w-xs" />
+                <input onChange={(e) => setRepeatPassword(e.target.value)} type="text" placeholder="repeat password" className="input input-bordered w-full max-w-xs" />
+                <button className="btn btn-primary" onClick={updateUserPassword}>Update Password</button>
             </div>
         </>
     )

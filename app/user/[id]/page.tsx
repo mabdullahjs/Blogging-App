@@ -1,5 +1,5 @@
 import BlogBox from '@/app/components/BlogBox';
-import axios from 'axios';
+import instance from '@/utils/apihandeling';
 import Link from 'next/link';
 import React from 'react'
 
@@ -10,8 +10,8 @@ interface Props {
 const DynamicHome = async ({ params: { id } }: Props) => {
 
 
-    const response = await axios.get(`http://localhost:3000/api/users/${id}`);
-    const blogData = await axios.get(`http://localhost:3000/api/blogs/${id}`);
+    const response = await instance.get(`/api/users/${id}`);
+    const blogData = await instance.get(`/api/blogs/${id}`);
     const data = blogData.data
     const userData = response.data[0]
     console.log(data);

@@ -2,8 +2,8 @@
 
 import React, { FormEvent, use, useEffect, useState } from 'react';
 import BlogBox from '../components/BlogBox';
-import axios, { AxiosResponse } from 'axios';
 import { useSelector } from 'react-redux';
+import instance from '@/utils/apihandeling';
 
 interface User {
     _id: string;
@@ -37,11 +37,11 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const blogsResponse = await axios.get(`/api/blogs/${uid}`);
+                const blogsResponse = await instance.get(`/api/blogs/${uid}`);
                 console.log(blogsResponse.data);
                 setData(blogsResponse.data);
 
-                const usersResponse = await axios.get(`http://localhost:3000/api/users/${uid}`);
+                const usersResponse = await instance.get(`/api/users/${uid}`);
                 setUser(usersResponse.data[0]);
                 console.log(usersResponse.data[0]);
 
@@ -62,7 +62,7 @@ const Dashboard = () => {
         console.log(user.firstname);
 
         setloading(true)
-        axios.post('/api/blogs', {
+        instance.post('/api/blogs', {
             title, description,
             profileUrl: profileUrl,
             uid,
@@ -94,13 +94,13 @@ const Dashboard = () => {
 
     //delete blog function
     function deleteBlog(index: number) {
-        axios.delete(`/api/blogs/${data[index]._id}`);
+        instance.delete(`/api/blogs/${data[index]._id}`);
         data.splice(index, 1);
         setData([...data]);
     }
     //update blog function
     function updateBlog(index: number) {
-        axios.put(`/api/blogs/${data[index]._id}`, {
+        instance.put(`/api/blogs/${data[index]._id}`, {
             title: updateFrom
         })
         data[index].title = updateFrom

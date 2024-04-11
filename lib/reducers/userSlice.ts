@@ -7,8 +7,11 @@ interface UserState {
     };
 }
 
+
+
 const initialState: UserState = {
-    user: {}
+    user: {
+    }
 };
 
 export const userSlice = createSlice({
@@ -24,6 +27,7 @@ export const userSlice = createSlice({
         }
     }
 });
+
 
 export const { addUser, removeUser } = userSlice.actions;
 export default userSlice.reducer;
