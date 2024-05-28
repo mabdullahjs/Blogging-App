@@ -7,14 +7,14 @@ import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/utils/firebaseconfig'
 import { useDispatch } from 'react-redux'
 import { addUser } from '@/lib/reducers/userSlice'
-import instance from '@/utils/apihandeling'
+import axios from 'axios'
 
 const Login = () => {
   //check user
  useEffect(()=>{
   onAuthStateChanged(auth, (user) => {
     if (user) { 
-      instance.get(`/api/users/${user.uid}`)
+      axios.get(`/api/users/${user.uid}`)
         .then((res) => {
           dispatch(addUser({
             uid: user.uid,

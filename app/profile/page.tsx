@@ -1,8 +1,8 @@
 'use client'
 
 
-import instance from '@/utils/apihandeling'
 import { auth } from '@/utils/firebaseconfig'
+import axios from 'axios'
 import { updatePassword } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -12,7 +12,7 @@ const Profile = () => {
 
     const selector = useSelector((state: { user: { uid: string, profileUrl: string } }) => state.user);
     useEffect(() => {
-        instance.get(`/api/users/${selector.uid}`)
+        axios.get(`/api/users/${selector.uid}`)
             .then((res) => {
                 console.log(typeof res.data[0].profileUrl);
 
